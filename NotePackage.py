@@ -1,4 +1,5 @@
 import datetime
+from Note import Note
 class NotePackage:
     def __init__(self, name: str = None,
                  creation_date: datetime = None,
@@ -9,7 +10,7 @@ class NotePackage:
         self.creation_date = creation_date
         self.last_modification_date = last_modification_date
         self.description = description
-        self.note = note
+        self.note: Note = Note(note)
 
     def to_dict(self) -> dict:
         return {
@@ -25,7 +26,7 @@ class NotePackage:
                 self.creation_date,
                 self.last_modification_date,
                 self.description,
-                self.note)
+                self.note.note)
 
     def upd(self, name: str = None,
             creation_date: datetime = None,

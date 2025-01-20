@@ -39,6 +39,8 @@ def main():
         return package
 
     def save_note(note: NotePackage) -> None:
+        if note == NotePackage():
+            return
         try:
             with my_sql.cursor() as my_sql_cursor:
                 sql_script = r"INSERT INTO Notes (note_name, creation_date, last_alter_date, description, note) VALUES (%s, %s, %s, %s, %s)"
@@ -76,6 +78,16 @@ def main():
         my_sql.commit()
 
 
+    def duplicate_note(note: NotePackage) -> None:
+        duplicate_note = NotePackage(name=f"{note.name}_Duplicate",
+                                     description=note.description,
+                                     note=note.note,
+                                     creation_date=note.creation_date,
+                                     last_modification_date=dt.now().strftime('%Y-%m-%d'))
+        notes.append(duplicate_note)
+        save_note(duplicate_note)
+
+
     def show_notes() -> None:
         load_notes()
         for idx, note in enumerate(notes):
@@ -97,18 +109,15 @@ def main():
                 edit_options()
                 case: str = input("Chose option: ")
                 if case == "1":
-                    delete_note(notes[int(note_num) - 1])
+                    delete_note(current_note)
                     break
                 elif case == "2":
-                    #TODO Overwrite
+                    duplicate_note(current_note)
                     pass
                 elif case == "3":
                     #todo edit curren note
                     pass
                 elif case == "4":
-                    #TODO Edit current note
-                    pass
-                elif case == "5":
                     break
 
     def join_db():
@@ -122,7 +131,7 @@ def main():
 
 
     def edit_options():
-        options: list[str] = ["Delete", "Overwrite", "Duplicate", "Edit", "Back to notes"]
+        options: list[str] = ["Delete", "Duplicate", "Edit", "Back to notes"]
         print("Chose Options:")
         for option in range(len(options)):
             print(f"N{option + 1} {options[option]}")
@@ -136,7 +145,7 @@ def main():
 
 
     use_state: bool = True
-    current_note: dict = {}
+    current_note: NotePackage = NotePackage()
     my_sql = join_db()
     notes = []
     while use_state:
