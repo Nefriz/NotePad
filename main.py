@@ -70,18 +70,10 @@ def main():
             if i.name == note.name:
                 notes.remove(i)
         my_sql_cursor = my_sql.cursor()
-        delete_script = r"DELETE FROM Notes wHERE name=%s"
-        values = (note.name)
+        delete_script = r"DELETE FROM Notes WHERE note_name=%s"
+        values = (note.name,)
         my_sql_cursor.execute(delete_script, values)
         my_sql.commit()
-
-    def delete_note_shell():
-        show_notes()
-        note_to_delete = input("Enter Note Number: ")
-        while not (note_to_delete.isdigit() and  (1 <= int(note_to_delete) < len(notes))):
-            note_to_delete = input("Please enter a valid Note Number: ")
-        note_to_delete = int(note_to_delete)
-        delete_note(notes[note_to_delete])
 
 
     def show_notes() -> None:
@@ -91,23 +83,33 @@ def main():
 
 
     def edit_note() -> None:
-        show_notes()
-        note_num = input("Enter Note Number: ")
-        while not (note_num.isdigit() and  (1 <= int(note_num) <= len(notes))):
-            note_num = input("Please enter a valid Note Number: ")
-        current_note: NotePackage = notes[int(note_num) - 1]
-        edit_state : bool = True
-        while edit_state:
-            edit_options()
-            case: str = input("Chose option: ")
-            if case == "1":
-                delete_note_shell()
-            elif case == "2":
-                #TODO Overwrite
-                pass
-            elif case == "3":
-                #todo edit curren note
-                pass
+        while True:
+            show_notes()
+            print(f"{len(notes) + 1} exit")
+            note_num = input("Enter Note Number: ")
+            while not (note_num.isdigit() and  (1 <= int(note_num) <= len(notes) + 1)):
+                note_num = input("Please enter a valid Note Number: ")
+            if int(note_num) == len(notes) + 1:
+                return
+            current_note: NotePackage = notes[int(note_num) - 1]
+            edit_state : bool = True
+            while edit_state:
+                edit_options()
+                case: str = input("Chose option: ")
+                if case == "1":
+                    delete_note(notes[int(note_num) - 1])
+                    break
+                elif case == "2":
+                    #TODO Overwrite
+                    pass
+                elif case == "3":
+                    #todo edit curren note
+                    pass
+                elif case == "4":
+                    #TODO Edit current note
+                    pass
+                elif case == "5":
+                    break
 
     def join_db():
         mydb = mysql.connector.connect(
@@ -120,7 +122,7 @@ def main():
 
 
     def edit_options():
-        options: list[str] = ["Delete", "Overwrite", "Duplicate", "Edit"]
+        options: list[str] = ["Delete", "Overwrite", "Duplicate", "Edit", "Back to notes"]
         print("Chose Options:")
         for option in range(len(options)):
             print(f"N{option + 1} {options[option]}")
