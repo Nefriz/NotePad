@@ -47,5 +47,12 @@ class NotePackage:
     def pack(self):
         return self.to_dict()
 
+    def clear(self):
+        self.creation_date = None
+        self.last_modification_date = None
+        self.description = None
+        self.note = None
+        self.name = None
+
     def __str__(self):
         return rf"{self.name}, {self.creation_date}, {self.last_modification_date}, {self.description}, {self.note}"

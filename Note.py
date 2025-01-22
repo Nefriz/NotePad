@@ -18,7 +18,3 @@ class Note:
     def __str__(self):
         return self.note
 
-# Example usage
-note = Note("My dog is big")
-note.replace(0, 1, 3, "not")
-print(note.note)
