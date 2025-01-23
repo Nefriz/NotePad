@@ -42,7 +42,7 @@ class NotePackage:
         if description is not None:
             self.description = description
         if note is not None:
-            self.note = note
+            self.note.note = note
 
     def pack(self):
         return self.to_dict()
